@@ -1,0 +1,19 @@
+{
+  "name": "Design Inspector",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "Inspect spacing, colors, and typography vs design tokens",
+  "permissions": ["scripting", "activeTab"],
+  "host_permissions": ["<all_urls>"],
+  "devtools_page": "devtools.html",
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content-script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
