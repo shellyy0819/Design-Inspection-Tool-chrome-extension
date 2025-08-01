@@ -1,9 +1,9 @@
 {
   "name": "Design Inspector",
-  "version": "1.0",
+  "version": "1.1",
   "manifest_version": 3,
-  "description": "Inspect spacing, colors, and typography vs design tokens",
-  "permissions": ["scripting", "activeTab"],
+  "description": "Real-time design inspection with overlays and export options",
+  "permissions": ["scripting", "activeTab","storage", "downloads"],
   "host_permissions": ["<all_urls>"],
   "devtools_page": "devtools.html",
   "background": {

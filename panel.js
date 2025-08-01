@@ -1,22 +1,30 @@
-document.getElementById("inspect").onclick = () => {
-  chrome.devtools.inspectedWindow.eval(
-    `(() => {
-      const spacingTokens = { sm: "8px", md: "16px", lg: "24px" };
-      const el = document.activeElement || document.body;
-      const styles = window.getComputedStyle(el);
-      const result = {
-        tag: el.tagName,
-        fontSize: styles.fontSize,
-        fontWeight: styles.fontWeight,
-        padding: styles.padding,
-        margin: styles.margin,
-        color: styles.color,
-        closestPaddingToken: Object.entries(spacingTokens).find(([_, val]) => val === styles.padding)
-      };
-      return result;
-    })()`,
-    (res, err) => {
-      document.getElementById("output").textContent = JSON.stringify(res, null, 2);
+let designTokens = {};
+let mismatches = [];
+
+document.getElementById("tokenUpload").addEventListener("change", (e) => {
+  const file = e.target.files[0];
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      designTokens = JSON.parse(reader.result);
+      console.log("designTokens", designTokens);
+      chrome.runtime.sendMessage({
+        type: "store-tokens",
+        payload: designTokens,
+      });
+      alert("✅ Design tokens loaded successfully");
+    } catch (err) {
+      console.error("❌ Parse error:", err);
+      alert("❌ Invalid JSON file");
     }
-  );
+  };
+  reader.readAsText(file);
+});
+
+document.getElementById("export").onclick = () => {
+  const blob = new Blob([JSON.stringify(mismatches, null, 2)], {
+    type: "application/json",
+  });
+  const url = URL.createObjectURL(blob);
+  chrome.downloads.download({ url, filename: "mismatches.json" });
 };
